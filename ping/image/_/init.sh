@@ -7,7 +7,7 @@ function main() {
     local expect_code=301
     while [ : ]; do
         sleep 60
-        local code=$(curl --proxy socks://tor:9050 -s -o /dev/null -w "%{http_code}\n" http://facebook.com || true)
+        local code=$(curl --proxy socks5h://tor:9050 -s -o /dev/null -w "%{http_code}\n" http://facebook.com || true)
         if [ "$expect_code" != "$code" ]; then
             echo "Connection test faled. Response code: $code". Expected $expect_code.
             stop_watcher
