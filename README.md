@@ -10,3 +10,7 @@ edit users in users.env
 edit exit nodes in tor.env
 
 optionaly add firewall rules from ./ufw.sh (UFW firewall)
+
+
+# Update
+To update pull new version from git and run ./update.sh
