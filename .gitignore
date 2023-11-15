@@ -1,3 +1,5 @@
 /_
-tor.env
-users.env
+/.env
+/tor.env
+/users.env
+
