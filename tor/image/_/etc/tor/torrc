@@ -1,0 +1,6 @@
+SocksPort 0.0.0.0:9050
+SocksPort :::9050
+ControlPort 0.0.0.0:9051
+ControlPort :::9051
+%include /data/exit-nodes.conf
+%include /data/bridges.conf

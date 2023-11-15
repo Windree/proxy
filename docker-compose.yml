@@ -1,0 +1,45 @@
+#autorun
+version: '3.3'
+services:
+  tor:
+    restart: unless-stopped
+    build: ./tor/image
+    env_file: tor.env
+    volumes:
+      - ./_/.tor:/root/.tor
+      - ./_/tor:/data
+    ports:
+      - 9050:9050
+    networks:
+      - net
+
+  dante:
+    restart: unless-stopped
+    build: ./dante/image
+    env_file: users.env
+    volumes:
+      - ./_/dante:/data
+    ports:
+      - 1080:1080
+    depends_on:
+      - tor
+    networks:
+      - net
+
+  ping:
+    restart: unless-stopped
+    build: ./ping/image
+    ports:
+      - 1081:1081
+    networks:
+      - net
+    depends_on:
+      - tor
+
+networks:
+  net:
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: fd00:cad2:0548:8915::/64
