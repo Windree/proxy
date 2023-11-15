@@ -18,7 +18,7 @@ Optionally apply firewall rules from ./ufw.sh (UFW firewall)
 
 ## Connecting
 
-You can connect tor directly bypassing any auth on port 9050 from local network
+You can connect tor socks server directly bypassing any auth on port 9050 from local network
 
 Also you can open socks server to the internet and connect it on port 11080 using credentials from .user.env
 
