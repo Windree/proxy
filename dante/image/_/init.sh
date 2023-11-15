@@ -1,8 +1,6 @@
 #!/bin/env bash
 set -Eeuo pipefail
 
-stop_file=$(mktemp --dry-run --tmpdir=/run)
-
 function init() {
     cat /etc/passwd | awk -F: '$3>=1000 && $3<65534' | cut --delimiter=: --fields=1 | while read -r user; do
         userdel "$user"
