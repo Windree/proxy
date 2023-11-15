@@ -9,7 +9,7 @@ services:
       - ./_/.tor:/root/.tor
       - ./_/tor:/data
     ports:
-      - 9050:9050
+      - "${EXTERNAL_TOR_PORT}:9050"
     networks:
       - net
 
@@ -20,7 +20,7 @@ services:
     volumes:
       - ./_/dante:/data
     ports:
-      - 1080:1080
+      - "${EXTERNAL_SOCKS_PORT}:1080"
     depends_on:
       - tor
     networks:
@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
     build: ./ping/image
     ports:
-      - 1081:1081
+      - "${EXTERNAL_PING_PORT}:1081"
     networks:
       - net
     depends_on:
