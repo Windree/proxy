@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 set -Eeuo pipefail
 
 pid_file=$(mktemp --dry-run --tmpdir=/run)
