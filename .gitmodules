@@ -1,3 +1,6 @@
 [submodule "tor"]
 	path = tor
 	url = git@github.com:Windree/tor.git
+[submodule "speedtest"]
+	path = speedtest
+	url = git@github.com:Windree/speedtest.git
