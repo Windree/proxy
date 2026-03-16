@@ -1,0 +1,38 @@
+services:
+  #tor
+  tor:
+    restart: unless-stopped
+    build: ./tor/image
+    env_file: .env
+    volumes:
+      - ./data/tor:/data
+    ports:
+      - "${PORT}:9050"
+    networks:
+      - net
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
+      start_period: ${HEATHCHECK_DELAY}
+      interval: 2m
+      timeout: 10s
+      retries: 1
+
+  # speed-test:
+  #   restart: unless-stopped
+  #   build: speed-test/image
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./_/tor:/data/low-speed/
+  #     - ./_/current-speed/:/data/current
+  #     - ./_/status:/data/
+  #   networks:
+  #     - net
+
+networks:
+  net:
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET}
