@@ -2,7 +2,7 @@ services:
   #tor
   tor:
     restart: unless-stopped
-    build: ./tor/image
+    build: tor/image
     env_file: .env
     volumes:
       - ./data/tor:/data
@@ -17,15 +17,10 @@ services:
       timeout: 10s
       retries: 1
 
-  # speed-test:
+  # speedtest:
   #   restart: unless-stopped
-  #   build: speed-test/image
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - ./_/tor:/data/low-speed/
-  #     - ./_/current-speed/:/data/current
-  #     - ./_/status:/data/
+  #   build: speedtest/image
+  #   env_file: .env
   #   networks:
   #     - net
 
