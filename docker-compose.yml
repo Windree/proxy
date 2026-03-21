@@ -15,7 +15,7 @@ services:
       retries: 1
 
   dante:
-    restart: none
+    restart: unless-stopped
     build: ./dante/image
     env_file: .env
     volumes:
