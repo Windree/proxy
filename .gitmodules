@@ -7,3 +7,6 @@
 [submodule "dante"]
 	path = dante
 	url = git@github.com:Windree/dante.git
+[submodule "rsyslog"]
+	path = rsyslog
+	url = git@github.com:Windree/rsyslog.git

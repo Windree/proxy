@@ -19,13 +19,17 @@ services:
     build: ./dante/image
     env_file: .env
     volumes:
-      - ./data/dante:/data
+      - ./data/logs/log.socket:/dev/log
     ports:
       - ${PORT}:1080
     networks:
       network1:
         driver_opts:
           com.docker.network.endpoint.ifname: eth@dante
+    depends_on:
+      # - tor
+      rsyslog:
+        condition: service_healthy
 
   # speedtest:
   #   restart: unless-stopped
@@ -33,6 +37,18 @@ services:
   #   env_file: .env
   #   networks:
   #     - net
+
+  rsyslog:
+    build: ./rsyslog
+    restart: "unless-stopped"
+    volumes:
+      - ./data/logs:/data
+    healthcheck:
+      test: [ "CMD-SHELL", "grep -q '00000000:0202' /proc/net/tcp || exit 1" ] #This checks the internal Linux kernel table to see if any process is listening on port 514 (hex 0202).
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
 
 networks:
   network1:
