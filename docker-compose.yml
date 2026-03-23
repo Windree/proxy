@@ -1,4 +1,18 @@
 services:
+
+  rsyslog:
+    build: ./rsyslog
+    restart: "unless-stopped"
+    volumes:
+      - ./data/logs:/data
+      - ./data/sockets:/sockets
+    healthcheck:
+      test: [ "CMD", "/healthcheck.sh" ] #This checks the internal Linux kernel table to see if any process is listening on port 514 (hex 0202).
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
   tor:
     restart: unless-stopped
     build: tor/image
@@ -19,7 +33,7 @@ services:
     build: ./dante/image
     env_file: .env
     volumes:
-      - ./data/logs/log.socket:/dev/log
+      - ./data/sockets:/sockets
     ports:
       - ${PORT}:1080
     networks:
@@ -31,24 +45,12 @@ services:
       rsyslog:
         condition: service_healthy
 
-  # speedtest:
+        # speedtest:
   #   restart: unless-stopped
   #   build: speedtest/image
   #   env_file: .env
   #   networks:
   #     - net
-
-  rsyslog:
-    build: ./rsyslog
-    restart: "unless-stopped"
-    volumes:
-      - ./data/logs:/data
-    healthcheck:
-      test: [ "CMD-SHELL", "grep -q '00000000:0202' /proc/net/tcp || exit 1" ] #This checks the internal Linux kernel table to see if any process is listening on port 514 (hex 0202).
-      interval: 5s
-      timeout: 3s
-      retries: 5
-      start_period: 5s
 
 networks:
   network1:
