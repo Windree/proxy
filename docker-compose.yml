@@ -27,6 +27,8 @@ services:
       - ./data/tor-windree:/data
     networks:
       - network1
+    ports:
+      - ${WINDREE_TOR_PORT}:9050/tcp
     healthcheck:
       test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
       start_period: ${HEATHCHECK_DELAY}
@@ -44,6 +46,44 @@ services:
     env_file: .env
     volumes:
       - ./data/tor-kassberke:/data
+    networks:
+      - network1
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
+      start_period: ${HEATHCHECK_DELAY}
+      interval: 2m
+      timeout: 10s
+      retries: 1
+
+  tor-yasha:
+    restart: unless-stopped
+    build: tor/image
+    tmpfs:
+      - /root/.tor:size=100663296 # ~46MB * 2
+    logging:
+      driver: none
+    env_file: .env
+    volumes:
+      - ./data/tor-yasha:/data
+    networks:
+      - network1
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
+      start_period: ${HEATHCHECK_DELAY}
+      interval: 2m
+      timeout: 10s
+      retries: 1
+
+  tor-maki:
+    restart: unless-stopped
+    build: tor/image
+    tmpfs:
+      - /root/.tor:size=100663296 # ~46MB * 2
+    logging:
+      driver: none
+    env_file: .env
+    volumes:
+      - ./data/tor-maki:/data
     networks:
       - network1
     healthcheck:
