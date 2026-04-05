@@ -1,24 +1,30 @@
 services:
 
-  rsyslog:
-    build: ./rsyslog
-    restart: "unless-stopped"
-    volumes:
-      - ./data/logs:/data
-      - ./data/sockets:/sockets
-    healthcheck:
-      test: [ "CMD", "/healthcheck.sh" ] #This checks the internal Linux kernel table to see if any process is listening on port 514 (hex 0202).
-      interval: 5s
-      timeout: 3s
-      retries: 5
-      start_period: 5s
-
-  tor:
+  xray:
     restart: unless-stopped
-    build: tor/image
+    build: xray/image
+    logging:
+      driver: none
     env_file: .env
     volumes:
-      - ./data/tor:/data
+      - ./data/xray:/data
+      - ./data/log/xray:/data/log
+    ports:
+      - ${XRAY_PORT}:443/tcp
+    command: "run -config /data/xray.json"
+    networks:
+      - network1
+
+  tor-windree:
+    restart: unless-stopped
+    build: tor/image
+    tmpfs:
+      - /root/.tor:size=100663296 # ~46MB * 2
+    logging:
+      driver: none
+    env_file: .env
+    volumes:
+      - ./data/tor-windree:/data
     networks:
       - network1
     healthcheck:
@@ -28,29 +34,32 @@ services:
       timeout: 10s
       retries: 1
 
-  dante:
+  tor-kassberke:
     restart: unless-stopped
-    build: ./dante/image
+    build: tor/image
+    tmpfs:
+      - /root/.tor:size=100663296 # ~46MB * 2
+    logging:
+      driver: none
     env_file: .env
     volumes:
-      - ./data/sockets:/sockets
-    ports:
-      - ${PORT}:1080
+      - ./data/tor-kassberke:/data
     networks:
-      network1:
-        driver_opts:
-          com.docker.network.endpoint.ifname: eth@dante
-    depends_on:
-      # - tor
-      rsyslog:
-        condition: service_healthy
+      - network1
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
+      start_period: ${HEATHCHECK_DELAY}
+      interval: 2m
+      timeout: 10s
+      retries: 1
 
-        # speedtest:
-  #   restart: unless-stopped
-  #   build: speedtest/image
-  #   env_file: .env
-  #   networks:
-  #     - net
+  configuration-generator:
+    restart: unless-stopped
+    build: configuration-generator/image
+    volumes:
+      - ./data-xray:/data/template
+      - ./data/xray:/data/configuration
+    command: "--watch /data/ --format json /data/template/xray.json.j2 /data/configuration/data.json /data/configuration/xray.json"
 
 networks:
   network1:

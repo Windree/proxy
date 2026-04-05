@@ -1,0 +1,89 @@
+{
+  "log": {
+    "access": "/data/log/access.log",
+    "error": "/data/log/error.log",
+    "loglevel": "debug"
+  },
+  "dns": {
+    "servers": [
+      "https://dns.google/dns-query"
+    ]
+  },
+  "inbounds": [
+    {
+      "port": 443,
+      "listen": "0.0.0.0",
+      "protocol": "vless",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      },
+      "settings": {
+        "clients": [
+          {% for user in users %}
+            {
+              "id": "{{ user.id }}",
+              "email": "{{ user.email }}"
+            }{% if not loop.last %},{% endif %}
+          {% endfor %}
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "mode": "packet-up",
+          "path": "{{ xray.path }}"
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "tag": "direct"
+    }{% if outbounds | length > 0 %},{% endif %}
+    {% for outbound in outbounds %}
+      {
+        "tag": "{{ outbound.tag }}",
+        "protocol": "{{ outbound.protocol }}",
+        "settings": {
+          "servers": [
+            {
+              "address": "{{ outbound.address }}",
+              "port": {{ outbound.port }}
+            }
+          ],
+          "udp": false
+        }
+      }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "port": 53,
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "domain": [
+          "dns.google"
+        ]
+      }{% if users | length > 0 %},{% endif %}
+      {% for user in users %}
+         {
+          "type": "field",
+          "user": [ "{{ user.email }}" ],
+          "outboundTag": "{{ user.outboundTag }}"
+        }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+}

@@ -4,3 +4,6 @@
 [submodule "tor"]
 	path = tor
 	url = git@github.com:Windree/tor.git
+[submodule "configuration-generator"]
+	path = configuration-generator
+	url = git@github.com:Windree/configuration-generator.git
