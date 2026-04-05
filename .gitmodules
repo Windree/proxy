@@ -4,9 +4,9 @@
 [submodule "speedtest"]
 	path = speedtest
 	url = git@github.com:Windree/speedtest.git
-[submodule "dante"]
-	path = dante
-	url = git@github.com:Windree/dante.git
 [submodule "rsyslog"]
 	path = rsyslog
 	url = git@github.com:Windree/rsyslog.git
+[submodule "xray"]
+	path = xray
+	url = git@github.com:Windree/xray.git
