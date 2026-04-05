@@ -1,3 +1,6 @@
 [submodule "xray"]
 	path = xray
 	url = git@github.com:Windree/xray.git
+[submodule "tor"]
+	path = tor
+	url = git@github.com:Windree/tor.git
