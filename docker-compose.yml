@@ -93,6 +93,25 @@ services:
       timeout: 10s
       retries: 1
 
+  tor-j:
+    restart: unless-stopped
+    build: tor/image
+    tmpfs:
+      - /root/.tor:size=100663296 # ~46MB * 2
+    env_file: .env
+    environment:
+      - TOR_EXIT_NODES="{us}"
+    volumes:
+      - ./data/tor-j:/data
+    networks:
+      - network1
+    healthcheck:
+      test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
+      start_period: ${HEATHCHECK_DELAY}
+      interval: 2m
+      timeout: 10s
+      retries: 1
+
   configuration-generator:
     restart: unless-stopped
     build: configuration-generator/image
