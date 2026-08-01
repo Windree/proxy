@@ -3,8 +3,6 @@ services:
   xray:
     restart: unless-stopped
     build: xray/image
-    logging:
-      driver: none
     env_file: .env
     volumes:
       - ./data/xray:/data
@@ -14,14 +12,17 @@ services:
     command: "run -config /data/xray.json"
     networks:
       - network1
+    depends_on:
+      - tor-windree
+      - tor-kassberke
+      - tor-yasha
+      - tor-j
 
   tor-windree:
     restart: unless-stopped
     build: tor/image
     tmpfs:
       - /root/.tor:size=100663296 # ~46MB * 2
-    logging:
-      driver: none
     env_file: .env
     volumes:
       - ./data/tor-windree:/data
@@ -29,6 +30,7 @@ services:
       - network1
     ports:
       - ${WINDREE_TOR_PORT}:9050/tcp
+      - ${WINDREE_OR_PORT}:9001/tcp
     healthcheck:
       test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
       start_period: ${HEATHCHECK_DELAY}
@@ -41,8 +43,6 @@ services:
     build: tor/image
     tmpfs:
       - /root/.tor:size=100663296 # ~46MB * 2
-    logging:
-      driver: none
     env_file: .env
     volumes:
       - ./data/tor-kassberke:/data
@@ -60,8 +60,6 @@ services:
     build: tor/image
     tmpfs:
       - /root/.tor:size=100663296 # ~46MB * 2
-    logging:
-      driver: none
     env_file: .env
     volumes:
       - ./data/tor-yasha:/data
@@ -74,24 +72,22 @@ services:
       timeout: 10s
       retries: 1
 
-  tor-makki:
-    restart: unless-stopped
-    build: tor/image
-    tmpfs:
-      - /root/.tor:size=100663296 # ~46MB * 2
-    logging:
-      driver: none
-    env_file: .env
-    volumes:
-      - ./data/tor-makki:/data
-    networks:
-      - network1
-    healthcheck:
-      test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
-      start_period: ${HEATHCHECK_DELAY}
-      interval: 2m
-      timeout: 10s
-      retries: 1
+  # tor-makki:
+  #   restart: unless-stopped
+  #   build: tor/image
+  #   tmpfs:
+  #     - /root/.tor:size=100663296 # ~46MB * 2
+  #   env_file: .env
+  #   volumes:
+  #     - ./data/tor-makki:/data
+  #   networks:
+  #     - network1
+  #   healthcheck:
+  #     test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
+  #     start_period: ${HEATHCHECK_DELAY}
+  #     interval: 2m
+  #     timeout: 10s
+  #     retries: 1
 
   tor-j:
     restart: unless-stopped
