@@ -48,6 +48,8 @@ services:
       - ./data/tor-kassberke:/data
     networks:
       - network1
+    ports:
+      - ${KASSBERKE_TOR_PORT}:9050/tcp
     healthcheck:
       test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
       start_period: ${HEATHCHECK_DELAY}
@@ -65,29 +67,14 @@ services:
       - ./data/tor-yasha:/data
     networks:
       - network1
+    ports:
+      - ${YASHA_TOR_PORT}:9050/tcp
     healthcheck:
       test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
       start_period: ${HEATHCHECK_DELAY}
       interval: 2m
       timeout: 10s
       retries: 1
-
-  # tor-makki:
-  #   restart: unless-stopped
-  #   build: tor/image
-  #   tmpfs:
-  #     - /root/.tor:size=100663296 # ~46MB * 2
-  #   env_file: .env
-  #   volumes:
-  #     - ./data/tor-makki:/data
-  #   networks:
-  #     - network1
-  #   healthcheck:
-  #     test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
-  #     start_period: ${HEATHCHECK_DELAY}
-  #     interval: 2m
-  #     timeout: 10s
-  #     retries: 1
 
   tor-j:
     restart: unless-stopped
@@ -101,6 +88,8 @@ services:
       - ./data/tor-j:/data
     networks:
       - network1
+    ports:
+      - ${J_TOR_PORT}:9050/tcp
     healthcheck:
       test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
       start_period: ${HEATHCHECK_DELAY}
