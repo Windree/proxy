@@ -32,7 +32,7 @@ services:
       - ${WINDREE_TOR_PORT}:9050/tcp
       - ${WINDREE_OR_PORT}:9001/tcp
     healthcheck:
-      test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
+      test: [ "CMD", "/entrypoint", "healthcheck" ]
       start_period: ${HEATHCHECK_DELAY}
       interval: 2m
       timeout: 10s
@@ -51,7 +51,7 @@ services:
     ports:
       - ${KASSBERKE_TOR_PORT}:9050/tcp
     healthcheck:
-      test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
+      test: [ "CMD", "/entrypoint", "healthcheck" ]
       start_period: ${HEATHCHECK_DELAY}
       interval: 2m
       timeout: 10s
@@ -70,7 +70,7 @@ services:
     ports:
       - ${YASHA_TOR_PORT}:9050/tcp
     healthcheck:
-      test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
+      test: [ "CMD", "/entrypoint", "healthcheck" ]
       start_period: ${HEATHCHECK_DELAY}
       interval: 2m
       timeout: 10s
@@ -91,7 +91,7 @@ services:
     ports:
       - ${J_TOR_PORT}:9050/tcp
     healthcheck:
-      test: [ "CMD", "/entrypoint.sh", "healthcheck" ]
+      test: [ "CMD", "/entrypoint", "healthcheck" ]
       start_period: ${HEATHCHECK_DELAY}
       interval: 2m
       timeout: 10s
