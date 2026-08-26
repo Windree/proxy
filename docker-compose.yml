@@ -13,11 +13,44 @@ services:
     networks:
       - network1
     depends_on:
-      - tor-windree
-      - tor-kassberke
-      - tor-yasha
-      - tor-j
+      tor-windree:
+        condition: service_started
+      tor-kassberke:
+        condition: service_started
+      tor-yasha:
+        condition: service_started
+      tor-j:
+        condition: service_started
+      configuration-generator:
+        condition: service_healthy
 
+  configuration-generator:
+    restart: unless-stopped
+    build: configuration-generator/image
+    volumes:
+      - ./data-xray:/data/template
+      - ./data/xray:/data/configuration
+    command: 
+      - "--data-file=/data/configuration/data.json"
+      - "/data/template/xray.json.j2"
+      - "/data/configuration/xray.json"
+      - "--watch=/data/"
+      - "--on-start=echo configuration generation started && rm -f /data/healthcheck"
+      - "--on-completed=echo configuration generated successfully && touch /data/healthcheck"
+      - "--on-error=rm -f /data/healthcheck"
+      - "--on-empty=rm -f /data/healthcheck"
+      - "--on-changed=echo regenerating configuration"
+      - "--on-exit=echo Exiting && rm -f /data/healthcheck"
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /data/healthcheck || exit 1"]
+      interval: 5s
+      timeout: 1s
+      retries: 5
+      start_period: 5s
+
+###########
+### TOR ###
+###########
   tor-windree:
     restart: unless-stopped
     build: tor/image
@@ -96,14 +129,6 @@ services:
       interval: 2m
       timeout: 10s
       retries: 1
-
-  configuration-generator:
-    restart: unless-stopped
-    build: configuration-generator/image
-    volumes:
-      - ./data-xray:/data/template
-      - ./data/xray:/data/configuration
-    command: "--watch /data/ --format json /data/template/xray.json.j2 /data/configuration/data.json /data/configuration/xray.json"
 
 networks:
   network1:
