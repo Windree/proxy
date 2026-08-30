@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-CURRENT_DIR=$(cd "$(dirname "$0")" && pwd) && \
-TIMESTAMP=$(date +%Y%m%d-%H%M%S) && \
-(mv "$CURRENT_DIR/../data/log/xray/access.log" "$CURRENT_DIR/../data/log/xray/access-$TIMESTAMP.log" || true) && \
-(mv "$CURRENT_DIR/../data/log/xray/error.log" "$CURRENT_DIR/../data/log/xray/error-$TIMESTAMP.log" || true) && \
-cd "$CURRENT_DIR" && \
-docker compose up -d

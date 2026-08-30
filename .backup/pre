@@ -1,4 +1,0 @@
-#!/bin/sh
-CURRENT_DIR=$(cd "$(dirname "$0")" && pwd) && \
-IDS=$(cd "$CURRENT_DIR" && docker compose ps --status=running --quiet) && \
-[ -n "$IDS" ] && (cd "$CURRENT_DIR" && docker compose stop) || exit 1
