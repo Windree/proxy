@@ -7,6 +7,6 @@
 [submodule "configuration-generator"]
 	path = configuration-generator
 	url = git@github.com:Windree/configuration-generator.git
-[submodule ".backup/docker"]
-	path = .backup/docker
+[submodule ".docker/backup"]
+	path = .docker/backup
 	url = git@github.com:Windree/docker-app-scripts-backup.git
